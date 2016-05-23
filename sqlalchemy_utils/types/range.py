@@ -218,6 +218,10 @@ class RangeComparator(types.TypeEngine.Comparator):
         other = self.coerce_arg(other)
         return self.op('@>')(other)
 
+    def overlaps(self, other, **kwargs):
+        other = self.coerce_arg(other)
+        return self.op('&&')(other)
+
     def contained_by(self, other, **kwargs):
         other = self.coerce_arg(other)
         return self.op('<@')(other)
