@@ -237,6 +237,29 @@ class TestIntRangeTypeOnPostgres(NumberRangeTestCase):
     @pytest.mark.parametrize(
         'number_range',
         (
+            [1, 2],
+            [3, 5],
+            (1, 3),
+            2
+        )
+    )
+    def test_overlaps_operator(
+        self,
+        session,
+        Building,
+        create_building,
+        number_range
+    ):
+        create_building([1, 3])
+        query = (
+            session.query(Building)
+            .filter(Building.persons_at_night.overlaps(number_range))
+        )
+        assert query.count()
+
+    @pytest.mark.parametrize(
+        'number_range',
+        (
             [1, 3],
             (0, 8),
             (-inf, inf)
