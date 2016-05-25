@@ -69,6 +69,7 @@ from .types import (  # noqa
     CurrencyType,
     DateRangeType,
     DateTimeRangeType,
+    DateTimeTzRangeType,
     EmailType,
     EncryptedType,
     instrumented_list,
