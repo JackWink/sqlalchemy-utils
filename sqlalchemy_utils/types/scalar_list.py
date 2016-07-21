@@ -58,6 +58,10 @@ class ScalarListType(types.TypeDecorator):
         self.separator = six.text_type(separator)
         self.coerce_func = coerce_func
 
+    @property
+    def python_type(self):
+        return list
+
     def process_bind_param(self, value, dialect):
         # Convert list of values to unicode separator-separated list
         # Example: [1, 2, 3, 4] -> u'1, 2, 3, 4'
