@@ -154,6 +154,7 @@ class PhoneNumberType(types.TypeDecorator, ScalarCoercible):
     STORE_FORMAT = 'e164'
     impl = types.Unicode(20)
 
+    @property
     def python_type(self, text):
         return self._coerce(text)
 
