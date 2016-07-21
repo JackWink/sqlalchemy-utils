@@ -269,6 +269,10 @@ for func in funcs:
 class RangeType(types.TypeDecorator, ScalarCoercible):
     comparator_factory = RangeComparator
 
+    @property
+    def python_type(self):
+        return self.interval_class
+
     def __init__(self, *args, **kwargs):
         if intervals is None:
             raise ImproperlyConfigured(
