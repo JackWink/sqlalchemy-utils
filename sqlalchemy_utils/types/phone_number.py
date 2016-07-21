@@ -155,8 +155,8 @@ class PhoneNumberType(types.TypeDecorator, ScalarCoercible):
     impl = types.Unicode(20)
 
     @property
-    def python_type(self, text):
-        return self._coerce(text)
+    def python_type(self):
+        return PhoneNumber
 
     def __init__(self, region='US', max_length=20, *args, **kwargs):
         # Bail if phonenumbers is not found.
