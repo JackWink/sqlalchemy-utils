@@ -171,6 +171,14 @@ class PhoneNumberType(types.TypeDecorator, ScalarCoercible):
 
     def process_bind_param(self, value, dialect):
         if value:
+            if isinstance(value, PhoneNumber):
+                pass
+            elif isinstance(value, BasePhoneNumber):
+                number = phonenumbers.format_number(
+                    value,
+                    phonenumbers.PhoneNumberFormat.E164
+                )
+                value = PhoneNumber(number, region=self.region)
             if not isinstance(value, PhoneNumber):
                 value = PhoneNumber(value, region=self.region)
 
