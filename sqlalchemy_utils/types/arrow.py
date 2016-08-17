@@ -91,4 +91,4 @@ class ArrowType(types.TypeDecorator, ScalarCoercible):
 
     @property
     def python_type(self):
-        return self.impl.type.python_type
+        return arrow.Arrow
