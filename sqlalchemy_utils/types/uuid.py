@@ -26,20 +26,25 @@ class UUIDType(types.TypeDecorator, ScalarCoercible):
     """
     impl = types.BINARY(16)
 
-    python_type = uuid.UUID
+    @property
+    def python_type(self):
+        if self.python_uuid:
+            return uuid.UUID
+        else:
+            return str
 
-    def __init__(self, binary=True, native=True):
+    def __init__(self, binary=True, native=True, python_uuid=False):
         """
         :param binary: Whether to use a BINARY(16) or CHAR(32) fallback.
         """
         self.binary = binary
         self.native = native
+        self.python_uuid = python_uuid
 
     def load_dialect_impl(self, dialect):
         if dialect.name == 'postgresql' and self.native:
             # Use the native UUID type.
             return dialect.type_descriptor(postgresql.UUID())
-
         else:
             # Fallback to either a BINARY or a CHAR.
             kind = self.impl if self.binary else types.CHAR(32)
@@ -50,10 +55,8 @@ class UUIDType(types.TypeDecorator, ScalarCoercible):
         if value and not isinstance(value, uuid.UUID):
             try:
                 value = uuid.UUID(value)
-
             except (TypeError, ValueError):
                 value = uuid.UUID(bytes=value)
-
         return value
 
     def process_bind_param(self, value, dialect):
@@ -76,7 +79,9 @@ class UUIDType(types.TypeDecorator, ScalarCoercible):
             if isinstance(value, uuid.UUID):
                 # Some drivers convert PostgreSQL's uuid values to
                 # Python's uuid.UUID objects by themselves
-                return value
-            return uuid.UUID(value)
-
-        return uuid.UUID(bytes=value) if self.binary else uuid.UUID(value)
+                return value if self.python_uuid else str(value)
+            return value
+        if self.python_uuid:
+            return uuid.UUID(bytes=value) if self.binary else uuid.UUID(value)
+        else:
+            return value.decode('utf-8') if self.binary else value
