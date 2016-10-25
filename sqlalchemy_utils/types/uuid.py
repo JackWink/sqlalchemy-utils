@@ -44,7 +44,7 @@ class UUIDType(types.TypeDecorator, ScalarCoercible):
     def load_dialect_impl(self, dialect):
         if dialect.name == 'postgresql' and self.native:
             # Use the native UUID type.
-            return dialect.type_descriptor(postgresql.UUID())
+            return dialect.type_descriptor(postgresql.UUID(as_uuid=False))
         else:
             # Fallback to either a BINARY or a CHAR.
             kind = self.impl if self.binary else types.CHAR(32)
