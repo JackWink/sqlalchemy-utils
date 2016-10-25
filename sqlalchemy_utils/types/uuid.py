@@ -79,9 +79,11 @@ class UUIDType(types.TypeDecorator, ScalarCoercible):
             if isinstance(value, uuid.UUID):
                 # Some drivers convert PostgreSQL's uuid values to
                 # Python's uuid.UUID objects by themselves
+                print('is uuid!!!!')
                 return value if self.python_uuid else str(value)
             return value
         if self.python_uuid:
+            print('using uuid!!!!')
             return uuid.UUID(bytes=value) if self.binary else uuid.UUID(value)
         else:
             return value.decode('utf-8') if self.binary else value
